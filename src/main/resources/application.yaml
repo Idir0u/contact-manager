@@ -1,0 +1,28 @@
+spring:
+  application:
+    name: Contact Manager
+  datasource:
+    url: ${DATABASE_URL:jdbc:h2:mem:contactdb}
+    username: ${POSTGRES_USER:sa}
+    password: ${POSTGRES_PASSWORD:}
+    driver-class-name: ${DB_DRIVER:org.h2.Driver}
+
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+
+  jpa:
+    hibernate:
+      ddl-auto: update          # Crée/modifie les tables automatiquement
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+
+  thymeleaf:
+    cache: false
+
+  sql:
+    init:
+      mode: always             # seulement en local H2 → on supprime data.sql

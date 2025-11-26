@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Gestion des Contacts - SEOMANIAK</title>
+    <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet"/>
+    <style>
+        body { 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .main-container {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            padding: 40px;
+            margin-top: 30px;
+            margin-bottom: 30px;
+        }
+        .header-title {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 800;
+            font-size: 2.5rem;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        .search-box {
+            background: white;
+            border-radius: 50px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            border: 2px solid #e0e0e0;
+            transition: all 0.3s ease;
+        }
+        .search-box:focus-within {
+            border-color: #667eea;
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.3);
+            transform: translateY(-2px);
+        }
+        .btn-gradient {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            color: white;
+            font-weight: 600;
+            padding: 12px 30px;
+            border-radius: 50px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+        .btn-gradient:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 25px rgba(102, 126, 234, 0.6);
+            color: white;
+        }
+        .contact-card {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s ease;
+            border-left: 4px solid #667eea;
+        }
+        .contact-card:hover {
+            transform: translateX(5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+        .contact-name {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #2d3748;
+            margin-bottom: 8px;
+        }
+        .contact-info {
+            color: #718096;
+            font-size: 0.95rem;
+            margin: 5px 0;
+        }
+        .contact-info i {
+            width: 20px;
+            color: #667eea;
+        }
+        .btn-action {
+            border-radius: 8px;
+            padding: 8px 16px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
+        .btn-edit {
+            background: #f6ad55;
+            color: white;
+            border: none;
+        }
+        .btn-edit:hover {
+            background: #ed8936;
+            transform: scale(1.05);
+            color: white;
+        }
+        .btn-delete {
+            background: #fc8181;
+            color: white;
+            border: none;
+        }
+        .btn-delete:hover {
+            background: #f56565;
+            transform: scale(1.05);
+            color: white;
+        }
+        .pagination {
+            margin-top: 30px;
+        }
+        .page-link {
+            border-radius: 8px;
+            margin: 0 3px;
+            color: #667eea;
+            border: 2px solid #e0e0e0;
+            transition: all 0.2s ease;
+        }
+        .page-link:hover {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+            transform: translateY(-2px);
+        }
+        .page-item.active .page-link {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-color: #667eea;
+        }
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #718096;
+        }
+        .empty-state i {
+            font-size: 4rem;
+            color: #cbd5e0;
+            margin-bottom: 20px;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .contact-card {
+            animation: fadeIn 0.5s ease;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="main-container">
+        <h1 class="header-title"><i class="fas fa-address-book"></i> Gestion des Contacts</h1>
+
+        <div class="row mb-4">
+            <div class="col-md-8">
+                <form th:action="@{/contacts}" method="get">
+                    <div class="input-group search-box">
+                        <span class="input-group-text bg-transparent border-0"><i class="fas fa-search text-muted"></i></span>
+                        <input type="text" name="search" th:value="${search}" class="form-control border-0" 
+                               placeholder="Rechercher par nom, email ou téléphone..." style="border-radius: 0 50px 50px 0;"/>
+                        <button class="btn btn-gradient" type="submit"><i class="fas fa-search"></i> Chercher</button>
+                    </div>
+                </form>
+            </div>
+            <div class="col-md-4 text-end">
+                <a th:href="@{/contacts/new}" class="btn btn-gradient">
+                    <i class="fas fa-user-plus"></i> Nouveau contact
+                </a>
+            </div>
+        </div>
+
+        <div th:if="${contacts.isEmpty()}" class="empty-state">
+            <i class="fas fa-inbox"></i>
+            <h3>Aucun contact trouvé</h3>
+            <p>Commencez par ajouter votre premier contact</p>
+            <a th:href="@{/contacts/new}" class="btn btn-gradient mt-3">
+                <i class="fas fa-plus"></i> Ajouter un contact
+            </a>
+        </div>
+
+        <div th:unless="${contacts.isEmpty()}">
+            <div th:each="c : ${contacts}" class="contact-card">
+                <div class="row align-items-center">
+                    <div class="col-md-8">
+                        <div class="contact-name">
+                            <i class="fas fa-user-circle"></i> <span th:text="${c.firstName + ' ' + c.lastName}"></span>
+                        </div>
+                        <div class="contact-info">
+                            <i class="fas fa-envelope"></i> <span th:text="${c.email}"></span>
+                        </div>
+                        <div class="contact-info" th:if="${c.phone != null and !c.phone.isEmpty()}">
+                            <i class="fas fa-phone"></i> <span th:text="${c.phone}"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-4 text-end">
+                        <a th:href="@{/contacts/{id}/edit(id=${c.id})}" class="btn btn-action btn-edit">
+                            <i class="fas fa-edit"></i> Éditer
+                        </a>
+                        <form th:action="@{/contacts/{id}/delete(id=${c.id})}" method="post" style="display:inline" 
+                              onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce contact ?')">
+                            <button type="submit" class="btn btn-action btn-delete">
+                                <i class="fas fa-trash"></i> Supprimer
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pagination -->
+        <nav th:if="${totalPages > 1}">
+            <ul class="pagination justify-content-center">
+                <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
+                    <a class="page-link" th:href="@{/(page=${currentPage-1}, size=10, search=${search})}">
+                        <i class="fas fa-chevron-left"></i> Précédent
+                    </a>
+                </li>
+                <li class="page-item" th:classappend="${i == currentPage} ? 'active'" th:each="i : ${#numbers.sequence(0, totalPages-1)}">
+                    <a class="page-link" th:href="@{/(page=${i}, size=10, search=${search})}" th:text="${i+1}"></a>
+                </li>
+                <li class="page-item" th:classappend="${currentPage == totalPages-1} ? 'disabled'">
+                    <a class="page-link" th:href="@{/(page=${currentPage+1}, size=10, search=${search})}">
+                        Suivant <i class="fas fa-chevron-right"></i>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+</div>
+</body>
+</html>

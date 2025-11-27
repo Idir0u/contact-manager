@@ -3,12 +3,9 @@ spring:
   application:
     name: contact-manager
 
-  datasource:
-    # Railway injecte DATABASE_URL au format postgres://...
-    url: ${DATABASE_URL:jdbc:h2:mem:contactdb}
-    username: ${POSTGRES_USER:sa}
-    password: ${POSTGRES_PASSWORD:}
-    # Auto-detect driver based on URL (no explicit driver needed)
+  # DataSource configuré dans DatabaseConfig.java
+  # Railway: Convertit automatiquement DATABASE_URL en jdbc:postgresql://
+  # Local: Utilise H2 par défaut
 
   h2:
     console:

@@ -25,10 +25,13 @@ public class DatabaseConfig {
         // Si une URL de base de données existe (Railway)
         if (databaseUrl != null && !databaseUrl.isEmpty()) {
             // Convertir postgresql:// en jdbc:postgresql://
-            if (databaseUrl.startsWith("postgresql://")) {
+            // Attention: ne pas doubler le protocole!
+            if (databaseUrl.startsWith("jdbc:")) {
+                // Déjà au bon format
+            } else if (databaseUrl.startsWith("postgresql://")) {
                 databaseUrl = "jdbc:" + databaseUrl;
             } else if (databaseUrl.startsWith("postgres://")) {
-                databaseUrl = databaseUrl.replace("postgres://", "jdbc:postgresql://");
+                databaseUrl = "jdbc:postgresql://" + databaseUrl.substring("postgres://".length());
             }
             
             // Ajouter SSL requis par Railway
@@ -47,7 +50,7 @@ public class DatabaseConfig {
             config.setMaxLifetime(1800000);
             
             System.out.println("✅ PostgreSQL DataSource configuré pour Railway");
-            System.out.println("📊 URL: " + databaseUrl.replaceAll("://[^@]+@", "://***:***@"));
+            System.out.println("📊 JDBC URL: " + databaseUrl.replaceAll("://[^@]+@", "://***:***@"));
             
         } else {
             // H2 par défaut (développement local)

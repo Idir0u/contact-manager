@@ -68,6 +68,15 @@
 - ✅ **Pagination** (10 contacts par page)
 - ✅ **Export CSV** - Télécharger tous les contacts au format CSV
 - ✅ **Import CSV** - Importer des contacts depuis un fichier CSV
+- ✅ **Fiche détaillée** - Page dédiée pour afficher toutes les informations d'un contact
+
+### Informations de Contact Complètes
+- 👤 **Informations personnelles** : Prénom, Nom, Email, Téléphone
+- 🏢 **Informations professionnelles** : Société, Poste
+- 📍 **Adresse complète** : Rue, Ville, Code postal, Pays
+- 🎂 **Date de naissance** avec calcul automatique de l'âge
+- 🌐 **Site web** avec lien direct
+- 📝 **Notes** personnalisées (500 caractères max)
 
 ### Interface Utilisateur
 - 🎨 **Mode Sombre/Clair** avec sauvegarde de préférence
@@ -213,6 +222,7 @@ contact-manager/
 |---------|-------|-------------|
 | `GET` | `/contacts` | Affiche la liste paginée des contacts avec recherche |
 | `GET` | `/contacts/new` | Affiche le formulaire de création |
+| `GET` | `/contacts/{id}` | Affiche la fiche détaillée d'un contact |
 | `GET` | `/contacts/{id}/edit` | Affiche le formulaire d'édition |
 | `POST` | `/contacts` | Sauvegarde (création ou mise à jour) d'un contact |
 | `POST` | `/contacts/{id}/delete` | Suppression douce d'un contact |
@@ -295,15 +305,15 @@ java -jar target/contact-manager-0.0.1-SNAPSHOT.jar
 
 ### Données de Seed
 
-Au démarrage, l'application insère automatiquement **8 contacts d'exemple** :
-- Sarah Dubois
-- Mohamed Benali
-- Amina El Amrani
-- Karim Fassi
-- Leila Rahmani
-- Youssef Tazi (supprimé)
-- Nadia Cherkaoui
-- Omar Zaki
+Au démarrage, l'application insère automatiquement **8 contacts d'exemple** avec informations complètes :
+- **Sarah Dubois** - Directrice Marketing @ SEOMANIAK, Casablanca
+- **Mohamed Benali** - Développeur Full Stack @ TechSolutions, Rabat
+- **Amina El Amrani** - Designer UX/UI @ Freelance, Marrakech
+- **Karim Fassi** - Data Analyst @ DataCorp, Fès
+- **Leila Rahmani** - Chef de Projet @ CloudTech, Tanger
+- **Youssef Tazi** - CEO @ StartupHub (contact supprimé)
+- **Nadia Cherkaoui** - Content Manager @ MediaGroup, Agadir
+- **Omar Zaki** - CTO @ SEOMANIAK, Casablanca
 
 ---
 
@@ -403,8 +413,15 @@ spring:
 
 ### Formulaire de Contact (Responsive)
 - Design adaptatif mobile/desktop
-- Icônes préfixées
+- Icônes préfixées pour chaque champ
 - Validation en temps réel
+- Organisation par sections (Personnel, Professionnel, Adresse, Complémentaire)
+
+### Fiche Détaillée de Contact
+- Affichage professionnel de toutes les informations
+- Calcul automatique de l'âge
+- Liens cliquables (email, téléphone, site web)
+- Boutons d'action (Éditer, Supprimer, Retour)
 
 ### Notifications Toast
 - Succès (vert)
@@ -424,6 +441,7 @@ public class Contact {
     @Id @GeneratedValue
     private Long id;
     
+    // Informations personnelles
     @NotBlank
     private String firstName;
     
@@ -437,6 +455,21 @@ public class Contact {
     @Pattern(regexp = "^\\+212[0-9]{9}$")
     private String phone;
     
+    // Informations professionnelles
+    private String company;
+    private String jobTitle;
+    
+    // Adresse
+    private String address;
+    private String city;
+    private String postalCode;
+    private String country;
+    
+    // Informations complémentaires
+    private LocalDate birthday;
+    private String website;
+    private String notes;
+    
     private Boolean isDeleted = false;
     
     @CreationTimestamp
@@ -449,10 +482,22 @@ public class Contact {
 
 ### Contraintes de Validation
 
-- ✅ **Prénom** : Obligatoire, non vide
-- ✅ **Nom** : Obligatoire, non vide
-- ✅ **Email** : Obligatoire, format valide, unique
-- ✅ **Téléphone** : Optionnel, format marocain (+212XXXXXXXXX)
+#### Champs Obligatoires
+- ✅ **Prénom** : 2-100 caractères
+- ✅ **Nom** : 2-100 caractères
+- ✅ **Email** : Format valide, unique
+
+#### Champs Optionnels avec Validation
+- 📞 **Téléphone** : Format marocain (+212XXXXXXXXX)
+- 🏢 **Société** : Max 100 caractères
+- 💼 **Poste** : Max 100 caractères
+- 📍 **Adresse** : Max 255 caractères
+- 🏙️ **Ville** : Max 100 caractères
+- 📮 **Code postal** : Chiffres uniquement, max 10
+- 🌍 **Pays** : Max 100 caractères
+- 🎂 **Date de naissance** : Format ISO (yyyy-MM-dd)
+- 🌐 **Site web** : URL valide, max 255 caractères
+- 📝 **Notes** : Max 500 caractères
 
 ---
 

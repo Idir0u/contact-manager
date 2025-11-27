@@ -364,7 +364,7 @@
         <div class="info-row" th:if="${contact.website != null and !contact.website.isEmpty()}">
             <div class="info-label"><i class="fas fa-link"></i> Site web</div>
             <div class="info-value">
-                <a th:href="${contact.website}" target="_blank" th:text="${contact.website}"></a>
+                <a th:href="${contact.website.startsWith('http') ? contact.website : 'https://' + contact.website}" target="_blank" th:text="${contact.website}"></a>
             </div>
         </div>
     </div>

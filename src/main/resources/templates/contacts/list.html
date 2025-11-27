@@ -390,7 +390,7 @@
                             <span th:if="${c.country != null and !c.country.isEmpty()}" th:text="', ' + ${c.country}"></span>
                         </div>
                         <div class="contact-info" th:if="${c.website != null and !c.website.isEmpty()}">
-                            <i class="fas fa-link"></i> <a th:href="${c.website}" target="_blank" th:text="${c.website}"></a>
+                            <i class="fas fa-link"></i> <a th:href="${c.website.startsWith('http') ? c.website : 'https://' + c.website}" target="_blank" th:text="${c.website}"></a>
                         </div>
                     </div>
                     <div class="col-md-4 text-end">

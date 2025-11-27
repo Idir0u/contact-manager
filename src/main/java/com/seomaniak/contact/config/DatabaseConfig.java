@@ -7,6 +7,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 
 import javax.sql.DataSource;
+import java.net.URI;
+import java.net.URISyntaxException;
 
 @Configuration
 public class DatabaseConfig {
@@ -24,33 +26,46 @@ public class DatabaseConfig {
         
         // Si une URL de base de données existe (Railway)
         if (databaseUrl != null && !databaseUrl.isEmpty()) {
-            // Convertir postgresql:// en jdbc:postgresql://
-            // Attention: ne pas doubler le protocole!
-            if (databaseUrl.startsWith("jdbc:")) {
-                // Déjà au bon format
-            } else if (databaseUrl.startsWith("postgresql://")) {
-                databaseUrl = "jdbc:" + databaseUrl;
-            } else if (databaseUrl.startsWith("postgres://")) {
-                databaseUrl = "jdbc:postgresql://" + databaseUrl.substring("postgres://".length());
+            try {
+                // Parser l'URL PostgreSQL (format: postgresql://user:pass@host:port/db)
+                URI uri = new URI(databaseUrl.replace("postgres://", "postgresql://"));
+                
+                String host = uri.getHost();
+                int port = uri.getPort() != -1 ? uri.getPort() : 5432;
+                String database = uri.getPath().substring(1); // Retirer le '/' initial
+                String userInfo = uri.getUserInfo();
+                
+                String username = null;
+                String password = null;
+                
+                if (userInfo != null && userInfo.contains(":")) {
+                    String[] credentials = userInfo.split(":", 2);
+                    username = credentials[0];
+                    password = credentials[1];
+                }
+                
+                // Construire l'URL JDBC proprement
+                String jdbcUrl = String.format("jdbc:postgresql://%s:%d/%s?sslmode=require", host, port, database);
+                
+                config.setJdbcUrl(jdbcUrl);
+                config.setUsername(username);
+                config.setPassword(password);
+                config.setDriverClassName("org.postgresql.Driver");
+                config.setMaximumPoolSize(5);
+                config.setMinimumIdle(2);
+                config.setConnectionTimeout(30000);
+                config.setIdleTimeout(600000);
+                config.setMaxLifetime(1800000);
+                
+                System.out.println("✅ PostgreSQL DataSource configuré pour Railway");
+                System.out.println("📊 Host: " + host);
+                System.out.println("📊 Port: " + port);
+                System.out.println("📊 Database: " + database);
+                System.out.println("📊 Username: " + username);
+                
+            } catch (URISyntaxException e) {
+                throw new RuntimeException("Erreur lors du parsing de DATABASE_URL: " + e.getMessage(), e);
             }
-            
-            // Ajouter SSL requis par Railway
-            if (!databaseUrl.contains("?")) {
-                databaseUrl += "?sslmode=require";
-            } else if (!databaseUrl.contains("sslmode")) {
-                databaseUrl += "&sslmode=require";
-            }
-            
-            config.setJdbcUrl(databaseUrl);
-            config.setDriverClassName("org.postgresql.Driver");
-            config.setMaximumPoolSize(5);
-            config.setMinimumIdle(2);
-            config.setConnectionTimeout(30000);
-            config.setIdleTimeout(600000);
-            config.setMaxLifetime(1800000);
-            
-            System.out.println("✅ PostgreSQL DataSource configuré pour Railway");
-            System.out.println("📊 JDBC URL: " + databaseUrl.replaceAll("://[^@]+@", "://***:***@"));
             
         } else {
             // H2 par défaut (développement local)

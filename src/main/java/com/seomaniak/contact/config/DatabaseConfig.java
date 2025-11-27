@@ -14,11 +14,15 @@ public class DatabaseConfig {
     @Bean
     @Primary
     public DataSource dataSource() {
-        String databaseUrl = System.getenv("DATABASE_URL");
+        // Priorité à DATABASE_PUBLIC_URL (Railway public), sinon DATABASE_URL
+        String databaseUrl = System.getenv("DATABASE_PUBLIC_URL");
+        if (databaseUrl == null || databaseUrl.isEmpty()) {
+            databaseUrl = System.getenv("DATABASE_URL");
+        }
         
         HikariConfig config = new HikariConfig();
         
-        // Si DATABASE_URL existe (Railway), le convertir en format JDBC
+        // Si une URL de base de données existe (Railway)
         if (databaseUrl != null && !databaseUrl.isEmpty()) {
             // Convertir postgresql:// en jdbc:postgresql://
             if (databaseUrl.startsWith("postgresql://")) {
@@ -27,14 +31,13 @@ public class DatabaseConfig {
                 databaseUrl = databaseUrl.replace("postgres://", "jdbc:postgresql://");
             }
             
-            // Ajouter les paramètres SSL requis par Railway
+            // Ajouter SSL requis par Railway
             if (!databaseUrl.contains("?")) {
                 databaseUrl += "?sslmode=require";
-            } else {
+            } else if (!databaseUrl.contains("sslmode")) {
                 databaseUrl += "&sslmode=require";
             }
             
-            // Railway fournit l'URL complète avec username et password intégrés
             config.setJdbcUrl(databaseUrl);
             config.setDriverClassName("org.postgresql.Driver");
             config.setMaximumPoolSize(5);

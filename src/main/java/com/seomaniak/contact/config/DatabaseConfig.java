@@ -27,8 +27,14 @@ public class DatabaseConfig {
                 databaseUrl = databaseUrl.replace("postgres://", "jdbc:postgresql://");
             }
             
+            // Ajouter les paramètres SSL requis par Railway
+            if (!databaseUrl.contains("?")) {
+                databaseUrl += "?sslmode=require";
+            } else {
+                databaseUrl += "&sslmode=require";
+            }
+            
             // Railway fournit l'URL complète avec username et password intégrés
-            // Format: jdbc:postgresql://user:password@host:port/database
             config.setJdbcUrl(databaseUrl);
             config.setDriverClassName("org.postgresql.Driver");
             config.setMaximumPoolSize(5);

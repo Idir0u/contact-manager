@@ -22,9 +22,8 @@ spring:
     properties:
       hibernate:
         format_sql: true
-        dialect: ${SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT:org.hibernate.dialect.H2Dialect}
-        # Dialect auto-détecté avec Spring Boot 3+, pas besoin de variable
-        # dialect: org.hibernate.dialect.PostgreSQLDialect  ← inutile
+        # Spring Boot 3 auto-détecte le dialect basé sur le driver
+        # Pas besoin de variable d'environnement, il détectera PostgreSQL sur Railway
 
   thymeleaf:
     cache: false

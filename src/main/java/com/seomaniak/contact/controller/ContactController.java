@@ -66,6 +66,13 @@ public class ContactController {
         return "contacts/form";
     }
 
+    // Vue détaillée d'un contact
+    @GetMapping("/{id}")
+    public String detail(@PathVariable Long id, Model model) {
+        model.addAttribute("contact", service.findById(id));
+        return "contacts/detail";
+    }
+
     // Sauvegarde (création + édition)
     @PostMapping
     public String save(@Valid @ModelAttribute("contact") ContactRequestDTO dto,

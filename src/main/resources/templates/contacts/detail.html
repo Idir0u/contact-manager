@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${contact.firstName + ' ' + contact.lastName + ' - Détails'}"></title>
+    <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet"/>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet"/>
+    <style>
+        :root {
+            --bg-gradient-1: #667eea;
+            --bg-gradient-2: #764ba2;
+            --container-bg: rgba(255, 255, 255, 0.95);
+            --text-primary: #2d3748;
+            --text-secondary: #718096;
+            --card-bg: white;
+            --border-color: #e0e0e0;
+            --section-bg: #f7fafc;
+            --shadow-color: rgba(0, 0, 0, 0.08);
+            --shadow-hover: rgba(0, 0, 0, 0.15);
+        }
+        
+        [data-theme="dark"] {
+            --bg-gradient-1: #1a202c;
+            --bg-gradient-2: #2d3748;
+            --container-bg: rgba(26, 32, 44, 0.95);
+            --text-primary: #e2e8f0;
+            --text-secondary: #a0aec0;
+            --card-bg: #2d3748;
+            --border-color: #4a5568;
+            --section-bg: #1a202c;
+            --shadow-color: rgba(0, 0, 0, 0.3);
+            --shadow-hover: rgba(0, 0, 0, 0.5);
+        }
+        
+        body { 
+            background: linear-gradient(135deg, var(--bg-gradient-1) 0%, var(--bg-gradient-2) 100%);
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            padding: 20px;
+            transition: background 0.3s ease;
+        }
+        
+        .detail-container {
+            background: var(--container-bg);
+            border-radius: 20px;
+            box-shadow: 0 20px 60px var(--shadow-color);
+            padding: 40px;
+            max-width: 900px;
+            margin: 0 auto;
+            transition: background 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .header-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        
+        .contact-header {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            flex: 1;
+        }
+        
+        .contact-avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 2.5rem;
+            font-weight: 700;
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+        }
+        
+        .contact-title {
+            flex: 1;
+        }
+        
+        .contact-name {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 800;
+            font-size: 2rem;
+            margin: 0;
+        }
+        
+        .contact-job {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            margin-top: 5px;
+        }
+        
+        .theme-toggle {
+            background: var(--card-bg);
+            border: 2px solid var(--border-color);
+            border-radius: 50%;
+            width: 45px;
+            height: 45px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-primary);
+        }
+        
+        .theme-toggle:hover {
+            transform: rotate(180deg) scale(1.1);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+        
+        .theme-toggle i {
+            font-size: 1.2rem;
+        }
+        
+        .info-section {
+            background: var(--section-bg);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 20px;
+            border-left: 4px solid #667eea;
+            transition: background 0.3s ease;
+        }
+        
+        .section-title {
+            color: var(--text-primary);
+            font-weight: 700;
+            font-size: 1.3rem;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: color 0.3s ease;
+        }
+        
+        .section-title i {
+            color: #667eea;
+            font-size: 1.5rem;
+        }
+        
+        .info-row {
+            display: grid;
+            grid-template-columns: 150px 1fr;
+            gap: 15px;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--border-color);
+            transition: border-color 0.3s ease;
+        }
+        
+        .info-row:last-child {
+            border-bottom: none;
+        }
+        
+        .info-label {
+            color: var(--text-secondary);
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: color 0.3s ease;
+        }
+        
+        .info-label i {
+            color: #667eea;
+            width: 20px;
+        }
+        
+        .info-value {
+            color: var(--text-primary);
+            font-weight: 500;
+            word-break: break-word;
+            transition: color 0.3s ease;
+        }
+        
+        .info-value a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+        }
+        
+        .info-value a:hover {
+            text-decoration: underline;
+        }
+        
+        .notes-box {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 15px;
+            color: var(--text-primary);
+            font-style: italic;
+            margin-top: 10px;
+            transition: all 0.3s ease;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 30px;
+        }
+        
+        .btn-gradient {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            color: white;
+            font-weight: 600;
+            padding: 12px 25px;
+            border-radius: 50px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        .btn-gradient:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 25px rgba(102, 126, 234, 0.6);
+            color: white;
+        }
+        
+        .btn-outline-custom {
+            background: transparent;
+            border: 2px solid #667eea;
+            color: #667eea;
+            font-weight: 600;
+            padding: 10px 23px;
+            border-radius: 50px;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-outline-custom:hover {
+            background: #667eea;
+            color: white;
+            transform: translateY(-2px);
+        }
+        
+        .btn-danger-custom {
+            background: #fc8181;
+            border: none;
+            color: white;
+            font-weight: 600;
+            padding: 12px 25px;
+            border-radius: 50px;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-danger-custom:hover {
+            background: #f56565;
+            transform: translateY(-2px);
+            color: white;
+        }
+        
+        .empty-value {
+            color: var(--text-secondary);
+            font-style: italic;
+            opacity: 0.7;
+        }
+        
+        @media (max-width: 768px) {
+            .detail-container {
+                padding: 25px;
+            }
+            
+            .contact-avatar {
+                width: 80px;
+                height: 80px;
+                font-size: 2rem;
+            }
+            
+            .contact-name {
+                font-size: 1.5rem;
+            }
+            
+            .contact-job {
+                font-size: 1rem;
+            }
+            
+            .info-row {
+                grid-template-columns: 1fr;
+                gap: 5px;
+            }
+            
+            .section-title {
+                font-size: 1.1rem;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+            }
+            
+            .action-buttons .btn {
+                width: 100%;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            body {
+                padding: 10px;
+            }
+            
+            .detail-container {
+                padding: 20px;
+                border-radius: 15px;
+            }
+            
+            .contact-header {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .header-section {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="detail-container">
+    <div class="header-section">
+        <div class="contact-header">
+            <div class="contact-avatar" th:text="${contact.firstName.substring(0,1) + contact.lastName.substring(0,1)}"></div>
+            <div class="contact-title">
+                <h1 class="contact-name" th:text="${contact.firstName + ' ' + contact.lastName}"></h1>
+                <div class="contact-job" th:if="${contact.jobTitle != null and !contact.jobTitle.isEmpty()}">
+                    <span th:text="${contact.jobTitle}"></span>
+                    <span th:if="${contact.company != null and !contact.company.isEmpty()}" th:text="' chez ' + ${contact.company}"></span>
+                </div>
+            </div>
+        </div>
+        <button type="button" class="theme-toggle" onclick="toggleTheme()" id="themeToggle">
+            <i class="fas fa-moon" id="themeIcon"></i>
+        </button>
+    </div>
+
+    <!-- Informations de contact -->
+    <div class="info-section">
+        <h2 class="section-title">
+            <i class="fas fa-address-card"></i>
+            Informations de contact
+        </h2>
+        <div class="info-row">
+            <div class="info-label"><i class="fas fa-envelope"></i> Email</div>
+            <div class="info-value">
+                <a th:href="'mailto:' + ${contact.email}" th:text="${contact.email}"></a>
+            </div>
+        </div>
+        <div class="info-row" th:if="${contact.phone != null and !contact.phone.isEmpty()}">
+            <div class="info-label"><i class="fas fa-phone"></i> Téléphone</div>
+            <div class="info-value">
+                <a th:href="'tel:' + ${contact.phone}" th:text="${contact.phone}"></a>
+            </div>
+        </div>
+        <div class="info-row" th:if="${contact.website != null and !contact.website.isEmpty()}">
+            <div class="info-label"><i class="fas fa-link"></i> Site web</div>
+            <div class="info-value">
+                <a th:href="${contact.website}" target="_blank" th:text="${contact.website}"></a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Informations professionnelles -->
+    <div class="info-section" th:if="${(contact.company != null and !contact.company.isEmpty()) or (contact.jobTitle != null and !contact.jobTitle.isEmpty())}">
+        <h2 class="section-title">
+            <i class="fas fa-briefcase"></i>
+            Informations professionnelles
+        </h2>
+        <div class="info-row" th:if="${contact.company != null and !contact.company.isEmpty()}">
+            <div class="info-label"><i class="fas fa-building"></i> Société</div>
+            <div class="info-value" th:text="${contact.company}"></div>
+        </div>
+        <div class="info-row" th:if="${contact.jobTitle != null and !contact.jobTitle.isEmpty()}">
+            <div class="info-label"><i class="fas fa-user-tie"></i> Poste</div>
+            <div class="info-value" th:text="${contact.jobTitle}"></div>
+        </div>
+    </div>
+
+    <!-- Adresse -->
+    <div class="info-section" th:if="${(contact.address != null and !contact.address.isEmpty()) or (contact.city != null and !contact.city.isEmpty())}">
+        <h2 class="section-title">
+            <i class="fas fa-map-marker-alt"></i>
+            Adresse
+        </h2>
+        <div class="info-row" th:if="${contact.address != null and !contact.address.isEmpty()}">
+            <div class="info-label"><i class="fas fa-road"></i> Rue</div>
+            <div class="info-value" th:text="${contact.address}"></div>
+        </div>
+        <div class="info-row" th:if="${contact.city != null and !contact.city.isEmpty()}">
+            <div class="info-label"><i class="fas fa-city"></i> Ville</div>
+            <div class="info-value" th:text="${contact.city}"></div>
+        </div>
+        <div class="info-row" th:if="${contact.postalCode != null and !contact.postalCode.isEmpty()}">
+            <div class="info-label"><i class="fas fa-mail-bulk"></i> Code postal</div>
+            <div class="info-value" th:text="${contact.postalCode}"></div>
+        </div>
+        <div class="info-row" th:if="${contact.country != null and !contact.country.isEmpty()}">
+            <div class="info-label"><i class="fas fa-globe"></i> Pays</div>
+            <div class="info-value" th:text="${contact.country}"></div>
+        </div>
+    </div>
+
+    <!-- Informations complémentaires -->
+    <div class="info-section" th:if="${contact.birthday != null or (contact.notes != null and !contact.notes.isEmpty())}">
+        <h2 class="section-title">
+            <i class="fas fa-info-circle"></i>
+            Informations complémentaires
+        </h2>
+        <div class="info-row" th:if="${contact.birthday != null}">
+            <div class="info-label"><i class="fas fa-birthday-cake"></i> Date de naissance</div>
+            <div class="info-value" th:text="${#temporals.format(contact.birthday, 'dd/MM/yyyy')}"></div>
+        </div>
+        <div th:if="${contact.notes != null and !contact.notes.isEmpty()}">
+            <div class="info-label" style="margin-bottom: 10px;">
+                <i class="fas fa-sticky-note"></i> Notes
+            </div>
+            <div class="notes-box" th:text="${contact.notes}"></div>
+        </div>
+    </div>
+
+    <!-- Métadonnées -->
+    <div class="info-section">
+        <h2 class="section-title">
+            <i class="fas fa-clock"></i>
+            Métadonnées
+        </h2>
+        <div class="info-row">
+            <div class="info-label"><i class="fas fa-calendar-plus"></i> Créé le</div>
+            <div class="info-value" th:text="${#temporals.format(contact.createdAt, 'dd/MM/yyyy à HH:mm')}"></div>
+        </div>
+        <div class="info-row" th:if="${contact.updatedAt != null}">
+            <div class="info-label"><i class="fas fa-calendar-check"></i> Modifié le</div>
+            <div class="info-value" th:text="${#temporals.format(contact.updatedAt, 'dd/MM/yyyy à HH:mm')}"></div>
+        </div>
+    </div>
+
+    <!-- Boutons d'action -->
+    <div class="action-buttons">
+        <a th:href="@{/contacts}" class="btn btn-outline-custom">
+            <i class="fas fa-arrow-left"></i> Retour à la liste
+        </a>
+        <a th:href="@{/contacts/{id}/edit(id=${contact.id})}" class="btn btn-gradient">
+            <i class="fas fa-edit"></i> Éditer ce contact
+        </a>
+        <form th:action="@{/contacts/{id}/delete(id=${contact.id})}" method="post" style="display:inline" 
+              onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce contact ?')">
+            <button type="submit" class="btn btn-danger-custom">
+                <i class="fas fa-trash"></i> Supprimer
+            </button>
+        </form>
+    </div>
+</div>
+
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    // Theme toggle functionality
+    function toggleTheme() {
+        const html = document.documentElement;
+        const currentTheme = html.getAttribute('data-theme');
+        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+        
+        html.setAttribute('data-theme', newTheme);
+        localStorage.setItem('theme', newTheme);
+        
+        updateThemeIcon(newTheme);
+    }
+    
+    function updateThemeIcon(theme) {
+        const icon = document.getElementById('themeIcon');
+        if (theme === 'dark') {
+            icon.className = 'fas fa-sun';
+        } else {
+            icon.className = 'fas fa-moon';
+        }
+    }
+    
+    // Load saved theme on page load
+    document.addEventListener('DOMContentLoaded', function() {
+        const savedTheme = localStorage.getItem('theme') || 'light';
+        document.documentElement.setAttribute('data-theme', savedTheme);
+        updateThemeIcon(savedTheme);
+    });
+    /*]]>*/
+</script>
+</body>
+</html>

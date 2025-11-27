@@ -2,6 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
     <title th:text="${contact.id} ? 'Éditer' : 'Nouveau' + ' contact'"></title>
     <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet"/>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet"/>
@@ -34,24 +35,34 @@
             background: linear-gradient(135deg, var(--bg-gradient-1) 0%, var(--bg-gradient-2) 100%);
             min-height: 100vh;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            padding: 40px 0;
+            padding: 15px;
             transition: background 0.3s ease;
+            margin: 0;
+        }
+        .container {
+            width: 100%;
+            max-width: 100%;
+            padding: 0;
+            margin: 0;
         }
         .form-container {
             background: var(--form-bg);
-            border-radius: 20px;
-            box-shadow: 0 20px 60px var(--shadow-color);
-            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px var(--shadow-color);
+            padding: 20px;
             max-width: 600px;
             margin: 0 auto;
+            width: 100%;
             transition: background 0.3s ease, box-shadow 0.3s ease;
         }
         .form-header {
             text-align: center;
-            margin-bottom: 30px;
+            margin-bottom: 20px;
             display: flex;
-            justify-content: space-between;
+            justify-content: center;
             align-items: center;
+            flex-direction: column;
+            gap: 15px;
         }
         .form-title {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -59,21 +70,28 @@
             -webkit-text-fill-color: transparent;
             background-clip: text;
             font-weight: 800;
-            font-size: 2rem;
-            flex: 1;
+            font-size: 1.5rem;
+            text-align: center;
+            width: 100%;
+        }
+        .form-title i {
+            display: block;
+            margin-bottom: 10px;
+            font-size: 1.8rem;
         }
         .theme-toggle-form {
             background: var(--input-bg);
             border: 2px solid var(--input-border);
             border-radius: 50%;
-            width: 45px;
-            height: 45px;
+            width: 40px;
+            height: 40px;
             cursor: pointer;
             transition: all 0.3s ease;
             display: flex;
             align-items: center;
             justify-content: center;
             color: var(--text-primary);
+            flex-shrink: 0;
         }
         .theme-toggle-form:hover {
             transform: rotate(180deg) scale(1.1);
@@ -86,7 +104,7 @@
             font-weight: 600;
             color: var(--text-primary);
             margin-bottom: 8px;
-            font-size: 0.95rem;
+            font-size: 0.9rem;
             transition: color 0.3s ease;
         }
         .form-control {
@@ -94,9 +112,11 @@
             border-radius: 10px;
             padding: 12px 16px;
             transition: all 0.3s ease;
-            font-size: 1rem;
+            font-size: 0.95rem;
             background: var(--input-bg);
             color: var(--text-primary);
+            width: 100%;
+            box-sizing: border-box;
         }
         .form-control::placeholder {
             color: var(--input-icon);
@@ -126,11 +146,13 @@
             border: none;
             color: white;
             font-weight: 600;
-            padding: 14px 35px;
+            padding: 12px 25px;
             border-radius: 50px;
             transition: all 0.3s ease;
             box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
-            font-size: 1rem;
+            font-size: 0.95rem;
+            width: 100%;
+            box-sizing: border-box;
         }
         .btn-gradient:hover {
             transform: translateY(-3px);
@@ -142,14 +164,24 @@
             border: none;
             color: var(--text-secondary);
             font-weight: 600;
-            padding: 14px 35px;
+            padding: 12px 25px;
             border-radius: 50px;
             transition: all 0.3s ease;
+            width: 100%;
+            box-sizing: border-box;
+            font-size: 0.95rem;
         }
         .btn-secondary-custom:hover {
             background: var(--input-icon);
             color: var(--text-primary);
             transform: translateY(-2px);
+        }
+        .btn-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 20px;
+            width: 100%;
         }
         .text-danger {
             font-size: 0.85rem;
@@ -158,9 +190,179 @@
         .required-mark {
             color: #fc8181;
         }
+        
+        /* Notification Styles */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            min-width: 300px;
+            max-width: 400px;
+            padding: 16px 20px;
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            z-index: 9999;
+            animation: slideIn 0.3s ease;
+            font-weight: 600;
+        }
+        .notification.success {
+            background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+            color: white;
+        }
+        .notification.error {
+            background: linear-gradient(135deg, #f56565 0%, #e53e3e 100%);
+            color: white;
+        }
+        .notification.warning {
+            background: linear-gradient(135deg, #ed8936 0%, #dd6b20 100%);
+            color: white;
+        }
+        .notification.validation {
+            background: linear-gradient(135deg, #f6ad55 0%, #ed8936 100%);
+            color: white;
+        }
+        .notification i {
+            font-size: 1.5rem;
+        }
+        .notification .close-notification {
+            margin-left: auto;
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+            font-size: 1.2rem;
+            opacity: 0.8;
+            transition: opacity 0.2s;
+        }
+        .notification .close-notification:hover {
+            opacity: 1;
+        }
+        @keyframes slideIn {
+            from {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        @keyframes slideOut {
+            from {
+                transform: translateX(0);
+                opacity: 1;
+            }
+            to {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+        }
+        
+        /* Responsive Design */
+        @media (min-width: 480px) {
+            body {
+                padding: 20px;
+            }
+            .form-container {
+                padding: 25px;
+                border-radius: 18px;
+            }
+            .form-title {
+                font-size: 1.75rem;
+            }
+            .form-title i {
+                display: inline;
+                margin-bottom: 0;
+                margin-right: 10px;
+                font-size: inherit;
+            }
+            .theme-toggle-form {
+                width: 42px;
+                height: 42px;
+            }
+        }
+        
+        @media (min-width: 576px) {
+            body {
+                padding: 30px;
+            }
+            .form-container {
+                padding: 30px;
+            }
+            .form-header {
+                flex-direction: row;
+                justify-content: space-between;
+            }
+            .form-title {
+                font-size: 1.9rem;
+                text-align: left;
+                width: auto;
+            }
+            .theme-toggle-form {
+                width: 45px;
+                height: 45px;
+            }
+            .btn-actions {
+                flex-direction: row;
+                gap: 15px;
+            }
+            .btn-gradient,
+            .btn-secondary-custom {
+                padding: 14px 30px;
+                font-size: 1rem;
+            }
+        }
+        
+        @media (min-width: 768px) {
+            body {
+                padding: 40px;
+            }
+            .form-container {
+                padding: 40px;
+                border-radius: 20px;
+                box-shadow: 0 20px 60px var(--shadow-color);
+            }
+            .form-title {
+                font-size: 2rem;
+            }
+            .form-control {
+                font-size: 1rem;
+            }
+            .form-label {
+                font-size: 0.95rem;
+            }
+            .btn-gradient,
+            .btn-secondary-custom {
+                padding: 14px 35px;
+            }
+        }
+        
+        @media (max-width: 479px) {
+            .notification {
+                min-width: auto;
+                max-width: calc(100vw - 30px);
+                right: 15px;
+                left: 15px;
+                font-size: 0.9rem;
+                padding: 14px 16px;
+            }
+            .form-header {
+                margin-bottom: 15px;
+            }
+            .mb-4 {
+                margin-bottom: 1rem !important;
+            }
+        }
     </style>
 </head>
 <body>
+
+<!-- Notification Container -->
+<div id="notificationContainer"></div>
+
 <div class="container">
     <div class="form-container">
         <div class="form-header">
@@ -212,7 +414,7 @@
                 <div th:if="${#fields.hasErrors('phone')}" class="text-danger" th:errors="*{phone}"></div>
             </div>
 
-            <div class="d-flex gap-3 justify-content-center mt-4">
+            <div class="btn-actions">
                 <button type="submit" class="btn btn-gradient">
                     <i class="fas fa-save"></i> Sauvegarder
                 </button>
@@ -224,7 +426,58 @@
     </div>
 </div>
 
-<script>
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    // Notification system
+    function showNotification(message, type = 'success') {
+        const container = document.getElementById('notificationContainer');
+        const notification = document.createElement('div');
+        notification.className = `notification ${type}`;
+        
+        const icon = type === 'success' ? 'fa-check-circle' : 
+                     type === 'error' ? 'fa-exclamation-circle' : 
+                     type === 'validation' ? 'fa-exclamation-triangle' :
+                     'fa-exclamation-triangle';
+        
+        notification.innerHTML = `
+            <i class="fas ${icon}"></i>
+            <span>${message}</span>
+            <button class="close-notification" onclick="closeNotification(this)">
+                <i class="fas fa-times"></i>
+            </button>
+        `;
+        
+        container.appendChild(notification);
+        
+        // Auto-remove after 5 seconds
+        setTimeout(() => {
+            closeNotification(notification.querySelector('.close-notification'));
+        }, 5000);
+    }
+    
+    function closeNotification(button) {
+        const notification = button.closest('.notification');
+        notification.style.animation = 'slideOut 0.3s ease';
+        setTimeout(() => {
+            notification.remove();
+        }, 300);
+    }
+    
+    // Check for flash messages and validation errors on page load
+    document.addEventListener('DOMContentLoaded', function() {
+        // Error message (including duplicate email)
+        var errorMessage = /*[[${errorMessage}]]*/ '';
+        var errorType = /*[[${errorType}]]*/ 'error';
+        if (errorMessage) {
+            showNotification(errorMessage, errorType);
+        }
+        
+        // Load saved theme on page load
+        const savedTheme = localStorage.getItem('theme') || 'light';
+        document.documentElement.setAttribute('data-theme', savedTheme);
+        updateThemeIcon(savedTheme);
+    });
+    
     // Theme toggle functionality
     function toggleTheme() {
         const html = document.documentElement;
@@ -252,6 +505,7 @@
         document.documentElement.setAttribute('data-theme', savedTheme);
         updateThemeIcon(savedTheme);
     });
+    /*]]>*/
 </script>
 </body>
 </html>

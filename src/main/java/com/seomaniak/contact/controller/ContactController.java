@@ -12,6 +12,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @RequestMapping("/contacts")
@@ -56,22 +57,39 @@ public class ContactController {
     // Sauvegarde (création + édition)
     @PostMapping
     public String save(@Valid @ModelAttribute("contact") ContactRequestDTO dto,
-                       BindingResult result, Model model) {
+                       BindingResult result, Model model, RedirectAttributes redirectAttributes) {
         if (result.hasErrors()) {
+            model.addAttribute("errorMessage", "Veuillez corriger les erreurs du formulaire.");
+            model.addAttribute("errorType", "validation");
             return "contacts/form";
         }
-        if (dto.getId() == null) {
-            service.save(dto);
-        } else {
-            service.update(dto.getId(), dto);
+        
+        try {
+            if (dto.getId() == null) {
+                service.save(dto);
+                redirectAttributes.addFlashAttribute("successMessage", "Contact créé avec succès !");
+            } else {
+                service.update(dto.getId(), dto);
+                redirectAttributes.addFlashAttribute("successMessage", "Contact mis à jour avec succès !");
+            }
+            return "redirect:/contacts";
+        } catch (Exception e) {
+            model.addAttribute("errorMessage", "Une erreur est survenue lors de l'enregistrement.");
+            model.addAttribute("errorType", "error");
+            return "contacts/form";
         }
-        return "redirect:/contacts";
     }
 
     // Suppression douce
     @PostMapping("/{id}/delete")
-    public String delete(@PathVariable Long id) {
-        service.delete(id);
+    public String delete(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+        try {
+            service.delete(id);
+            redirectAttributes.addFlashAttribute("successMessage", "Contact supprimé avec succès !");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Erreur lors de la suppression du contact.");
+            redirectAttributes.addFlashAttribute("errorType", "error");
+        }
         return "redirect:/contacts";
     }
 

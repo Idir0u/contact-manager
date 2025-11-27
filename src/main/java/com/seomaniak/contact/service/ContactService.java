@@ -79,4 +79,4 @@ public class ContactService {
                 .updatedAt(contact.getUpdatedAt())
                 .build();
     }
-}
+} 

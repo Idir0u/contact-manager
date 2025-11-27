@@ -225,9 +225,79 @@
         .contact-card {
             animation: fadeIn 0.5s ease;
         }
+        
+        /* Notification Styles */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            min-width: 300px;
+            max-width: 400px;
+            padding: 16px 20px;
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            z-index: 9999;
+            animation: slideIn 0.3s ease;
+            font-weight: 600;
+        }
+        .notification.success {
+            background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+            color: white;
+        }
+        .notification.error {
+            background: linear-gradient(135deg, #f56565 0%, #e53e3e 100%);
+            color: white;
+        }
+        .notification.warning {
+            background: linear-gradient(135deg, #ed8936 0%, #dd6b20 100%);
+            color: white;
+        }
+        .notification i {
+            font-size: 1.5rem;
+        }
+        .notification .close-notification {
+            margin-left: auto;
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+            font-size: 1.2rem;
+            opacity: 0.8;
+            transition: opacity 0.2s;
+        }
+        .notification .close-notification:hover {
+            opacity: 1;
+        }
+        @keyframes slideIn {
+            from {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        @keyframes slideOut {
+            from {
+                transform: translateX(0);
+                opacity: 1;
+            }
+            to {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+        }
     </style>
 </head>
 <body>
+
+<!-- Notification Container -->
+<div id="notificationContainer"></div>
+
 <div class="container">
     <div class="main-container">
         <div class="header-section">
@@ -315,7 +385,58 @@
     </div>
 </div>
 
-<script>
+<script th:inline="javascript"> 
+    /*<![CDATA[*/
+    // Notification system
+    function showNotification(message, type = 'success') {
+        const container = document.getElementById('notificationContainer');
+        const notification = document.createElement('div');
+        notification.className = `notification ${type}`;
+        
+        const icon = type === 'success' ? 'fa-check-circle' : 
+                     type === 'error' ? 'fa-exclamation-circle' : 
+                     'fa-exclamation-triangle';
+        
+        notification.innerHTML = `
+            <i class="fas ${icon}"></i>
+            <span>${message}</span>
+            <button class="close-notification" onclick="closeNotification(this)">
+                <i class="fas fa-times"></i>
+            </button>
+        `;
+        
+        container.appendChild(notification);
+        
+        // Auto-remove after 5 seconds
+        setTimeout(() => {
+            closeNotification(notification.querySelector('.close-notification'));
+        }, 5000);
+    }
+    
+    function closeNotification(button) {
+        const notification = button.closest('.notification');
+        notification.style.animation = 'slideOut 0.3s ease';
+        setTimeout(() => {
+            notification.remove();
+        }, 300);
+    }
+    
+    // Check for flash messages on page load
+    document.addEventListener('DOMContentLoaded', function() {
+        // Success message
+        var successMessage = /*[[${successMessage}]]*/ '';
+        if (successMessage) {
+            showNotification(successMessage, 'success');
+        }
+        
+        // Error message
+        var errorMessage = /*[[${errorMessage}]]*/ '';
+        var errorType = /*[[${errorType}]]*/ 'error';
+        if (errorMessage) {
+            showNotification(errorMessage, errorType === 'duplicate' ? 'warning' : 'error');
+        }
+    });
+    
     // Theme toggle functionality
     function toggleTheme() {
         const html = document.documentElement;
@@ -347,6 +468,7 @@
         document.documentElement.setAttribute('data-theme', savedTheme);
         updateThemeButton(savedTheme);
     });
+    /*]]>*/
 </script>
 </body>
 </html>

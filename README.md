@@ -66,6 +66,8 @@
 - ✅ **Suppression douce** (soft delete) des contacts
 - ✅ **Recherche** par nom, email ou téléphone
 - ✅ **Pagination** (10 contacts par page)
+- ✅ **Export CSV** - Télécharger tous les contacts au format CSV
+- ✅ **Import CSV** - Importer des contacts depuis un fichier CSV
 
 ### Interface Utilisateur
 - 🎨 **Mode Sombre/Clair** avec sauvegarde de préférence
@@ -86,6 +88,12 @@
 - 📡 **Endpoints RESTful** complets
 - 📚 **Documentation Swagger** interactive
 - 🔄 **Support JSON** pour intégrations tierces
+
+### Import/Export
+- 📤 **Export CSV** : Téléchargement de tous les contacts au format CSV
+- 📥 **Import CSV** : Import en masse depuis un fichier CSV
+- 🔤 **Encodage UTF-8** avec BOM pour Excel
+- 📊 **Format compatible** : Excel, Google Sheets, LibreOffice
 
 ---
 
@@ -128,6 +136,7 @@
 
 #### 4. **Service Layer Pattern**
 - Logique métier centralisée dans `ContactService`
+- Service CSV dédié pour export/import (`CsvService`)
 - Encapsulation des opérations CRUD
 - Gestion des transactions
 
@@ -163,7 +172,10 @@ contact-manager/
 │   │   │   ├── repository/
 │   │   │   │   └── ContactRepository.java          # Interface JPA Repository
 │   │   │   ├── service/
-│   │   │   │   └── ContactService.java             # Logique métier
+│   │   │   │   ├── ContactService.java             # Logique métier
+│   │   │   │   └── CsvService.java                 # Service export/import CSV
+│   │   │   ├── config/
+│   │   │   │   └── DatabaseConfig.java             # Configuration base de données
 │   │   │   └── exception/
 │   │   │       └── ResourceNotFoundException.java  # Exception personnalisée
 │   │   └── resources/
@@ -204,6 +216,8 @@ contact-manager/
 | `GET` | `/contacts/{id}/edit` | Affiche le formulaire d'édition |
 | `POST` | `/contacts` | Sauvegarde (création ou mise à jour) d'un contact |
 | `POST` | `/contacts/{id}/delete` | Suppression douce d'un contact |
+| `GET` | `/contacts/export` | Télécharge tous les contacts au format CSV |
+| `POST` | `/contacts/import` | Importe des contacts depuis un fichier CSV |
 
 ### API REST (JSON)
 

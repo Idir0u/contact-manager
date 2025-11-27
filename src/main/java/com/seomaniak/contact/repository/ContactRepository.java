@@ -1,6 +1,9 @@
 package com.seomaniak.contact.repository;
 
 import com.seomaniak.contact.model.entity.Contact;
+
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -20,4 +23,6 @@ public interface ContactRepository extends JpaRepository<Contact, Long> {
 
     @Query("SELECT c FROM Contact c WHERE c.id = :id AND c.isDeleted = false")
     java.util.Optional<Contact> findByIdAndNotDeleted(@Param("id") Long id);
+
+    List<Contact> findByIsDeletedFalse();
 }

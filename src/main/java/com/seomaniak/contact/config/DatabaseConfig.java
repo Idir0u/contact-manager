@@ -27,18 +27,18 @@ public class DatabaseConfig {
                 databaseUrl = databaseUrl.replace("postgres://", "jdbc:postgresql://");
             }
             
-            String username = System.getenv("PGUSER");
-            String password = System.getenv("PGPASSWORD");
-            
+            // Railway fournit l'URL complète avec username et password intégrés
+            // Format: jdbc:postgresql://user:password@host:port/database
             config.setJdbcUrl(databaseUrl);
-            config.setUsername(username);
-            config.setPassword(password);
             config.setDriverClassName("org.postgresql.Driver");
             config.setMaximumPoolSize(5);
+            config.setMinimumIdle(2);
             config.setConnectionTimeout(30000);
+            config.setIdleTimeout(600000);
+            config.setMaxLifetime(1800000);
             
             System.out.println("✅ PostgreSQL DataSource configuré pour Railway");
-            System.out.println("📊 URL: " + databaseUrl.replaceAll(":[^:@]+@", ":***@"));
+            System.out.println("📊 URL: " + databaseUrl.replaceAll("://[^@]+@", "://***:***@"));
             
         } else {
             // H2 par défaut (développement local)

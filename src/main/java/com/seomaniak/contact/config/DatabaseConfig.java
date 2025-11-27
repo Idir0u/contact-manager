@@ -1,6 +1,7 @@
 package com.seomaniak.contact.config;
 
-import org.springframework.boot.jdbc.DataSourceBuilder;
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
@@ -15,6 +16,8 @@ public class DatabaseConfig {
     public DataSource dataSource() {
         String databaseUrl = System.getenv("DATABASE_URL");
         
+        HikariConfig config = new HikariConfig();
+        
         // Si DATABASE_URL existe (Railway), le convertir en format JDBC
         if (databaseUrl != null && !databaseUrl.isEmpty()) {
             // Convertir postgresql:// en jdbc:postgresql://
@@ -27,20 +30,26 @@ public class DatabaseConfig {
             String username = System.getenv("PGUSER");
             String password = System.getenv("PGPASSWORD");
             
-            return DataSourceBuilder.create()
-                    .url(databaseUrl)
-                    .username(username)
-                    .password(password)
-                    .driverClassName("org.postgresql.Driver")
-                    .build();
+            config.setJdbcUrl(databaseUrl);
+            config.setUsername(username);
+            config.setPassword(password);
+            config.setDriverClassName("org.postgresql.Driver");
+            config.setMaximumPoolSize(5);
+            config.setConnectionTimeout(30000);
+            
+            System.out.println("✅ PostgreSQL DataSource configuré pour Railway");
+            System.out.println("📊 URL: " + databaseUrl.replaceAll(":[^:@]+@", ":***@"));
+            
+        } else {
+            // H2 par défaut (développement local)
+            config.setJdbcUrl("jdbc:h2:mem:contactdb");
+            config.setUsername("sa");
+            config.setPassword("");
+            config.setDriverClassName("org.h2.Driver");
+            
+            System.out.println("🔧 H2 DataSource configuré pour développement local");
         }
         
-        // Sinon, utiliser H2 par défaut (développement local)
-        return DataSourceBuilder.create()
-                .url("jdbc:h2:mem:contactdb")
-                .username("sa")
-                .password("")
-                .driverClassName("org.h2.Driver")
-                .build();
+        return new HikariDataSource(config);
     }
 }

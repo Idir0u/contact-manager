@@ -19,8 +19,8 @@ spring:
     properties:
       hibernate:
         format_sql: true
-        # Spring Boot 3 auto-détecte le dialect basé sur le driver
-        # Pas besoin de variable d'environnement, il détectera PostgreSQL sur Railway
+        # Dialect détecté automatiquement par le driver
+        # PostgreSQL sur Railway, H2 en local
 
   thymeleaf:
     cache: false

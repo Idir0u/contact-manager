@@ -6,9 +6,10 @@
 
 > Une application web moderne et responsive pour la gestion de contacts avec interface utilisateur élégante, mode sombre et notifications en temps réel.
 
-## 🔗 Application Déployée
+## 🔗 Liens Importants
 
-**URL de production** : [https://web-production-01e1f.up.railway.app/contacts](https://web-production-01e1f.up.railway.app/contacts)
+**URL de production** : [https://web-production-01e1f.up.railway.app/contacts](https://web-production-01e1f.up.railway.app/contacts)  
+**Repository GitHub** : [https://github.com/Idir0u/contact-manager](https://github.com/Idir0u/contact-manager)
 
 ---
 

@@ -37,6 +37,15 @@ public class ContactService {
                 .lastName(dto.getLastName())
                 .email(dto.getEmail())
                 .phone(dto.getPhone())
+                .address(dto.getAddress())
+                .city(dto.getCity())
+                .postalCode(dto.getPostalCode())
+                .country(dto.getCountry())
+                .company(dto.getCompany())
+                .jobTitle(dto.getJobTitle())
+                .birthday(dto.getBirthday())
+                .notes(dto.getNotes())
+                .website(dto.getWebsite())
                 .isDeleted(false)
                 .build();
 
@@ -53,6 +62,15 @@ public class ContactService {
         contact.setLastName(dto.getLastName());
         contact.setEmail(dto.getEmail());
         contact.setPhone(dto.getPhone());
+        contact.setAddress(dto.getAddress());
+        contact.setCity(dto.getCity());
+        contact.setPostalCode(dto.getPostalCode());
+        contact.setCountry(dto.getCountry());
+        contact.setCompany(dto.getCompany());
+        contact.setJobTitle(dto.getJobTitle());
+        contact.setBirthday(dto.getBirthday());
+        contact.setNotes(dto.getNotes());
+        contact.setWebsite(dto.getWebsite());
 
         Contact updated = repository.save(contact);
         return toResponseDTO(updated);
@@ -74,6 +92,15 @@ public class ContactService {
                 .lastName(contact.getLastName())
                 .email(contact.getEmail())
                 .phone(contact.getPhone())
+                .address(contact.getAddress())
+                .city(contact.getCity())
+                .postalCode(contact.getPostalCode())
+                .country(contact.getCountry())
+                .company(contact.getCompany())
+                .jobTitle(contact.getJobTitle())
+                .birthday(contact.getBirthday())
+                .notes(contact.getNotes())
+                .website(contact.getWebsite())
                 .isDeleted(contact.getIsDeleted())
                 .createdAt(contact.getCreatedAt())
                 .updatedAt(contact.getUpdatedAt())

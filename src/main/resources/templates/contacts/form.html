@@ -414,6 +414,90 @@
                 <div th:if="${#fields.hasErrors('phone')}" class="text-danger" th:errors="*{phone}"></div>
             </div>
 
+            <!-- Informations professionnelles -->
+            <div class="mb-4">
+                <label class="form-label">Société</label>
+                <div class="input-icon">
+                    <i class="fas fa-building"></i>
+                    <input type="text" th:field="*{company}" class="form-control" placeholder="Nom de la société"/>
+                </div>
+                <div th:if="${#fields.hasErrors('company')}" class="text-danger" th:errors="*{company}"></div>
+            </div>
+
+            <div class="mb-4">
+                <label class="form-label">Poste</label>
+                <div class="input-icon">
+                    <i class="fas fa-briefcase"></i>
+                    <input type="text" th:field="*{jobTitle}" class="form-control" placeholder="Poste occupé"/>
+                </div>
+                <div th:if="${#fields.hasErrors('jobTitle')}" class="text-danger" th:errors="*{jobTitle}"></div>
+            </div>
+
+            <!-- Adresse -->
+            <div class="mb-4">
+                <label class="form-label">Adresse</label>
+                <div class="input-icon">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <input type="text" th:field="*{address}" class="form-control" placeholder="Numéro et rue"/>
+                </div>
+                <div th:if="${#fields.hasErrors('address')}" class="text-danger" th:errors="*{address}"></div>
+            </div>
+
+            <div class="mb-4">
+                <label class="form-label">Ville</label>
+                <div class="input-icon">
+                    <i class="fas fa-city"></i>
+                    <input type="text" th:field="*{city}" class="form-control" placeholder="Ville"/>
+                </div>
+                <div th:if="${#fields.hasErrors('city')}" class="text-danger" th:errors="*{city}"></div>
+            </div>
+
+            <div class="mb-4">
+                <label class="form-label">Code postal</label>
+                <div class="input-icon">
+                    <i class="fas fa-mail-bulk"></i>
+                    <input type="text" th:field="*{postalCode}" class="form-control" placeholder="Code postal"/>
+                </div>
+                <div th:if="${#fields.hasErrors('postalCode')}" class="text-danger" th:errors="*{postalCode}"></div>
+            </div>
+
+            <div class="mb-4">
+                <label class="form-label">Pays</label>
+                <div class="input-icon">
+                    <i class="fas fa-globe"></i>
+                    <input type="text" th:field="*{country}" class="form-control" placeholder="Pays"/>
+                </div>
+                <div th:if="${#fields.hasErrors('country')}" class="text-danger" th:errors="*{country}"></div>
+            </div>
+
+            <!-- Informations complémentaires -->
+            <div class="mb-4">
+                <label class="form-label">Date de naissance</label>
+                <div class="input-icon">
+                    <i class="fas fa-birthday-cake"></i>
+                    <input type="date" th:field="*{birthday}" class="form-control"/>
+                </div>
+                <div th:if="${#fields.hasErrors('birthday')}" class="text-danger" th:errors="*{birthday}"></div>
+            </div>
+
+            <div class="mb-4">
+                <label class="form-label">Site web</label>
+                <div class="input-icon">
+                    <i class="fas fa-link"></i>
+                    <input type="text" th:field="*{website}" class="form-control" placeholder="https://exemple.com"/>
+                </div>
+                <div th:if="${#fields.hasErrors('website')}" class="text-danger" th:errors="*{website}"></div>
+            </div>
+
+            <div class="mb-4">
+                <label class="form-label">Notes</label>
+                <div class="input-icon">
+                    <i class="fas fa-sticky-note"></i>
+                    <textarea th:field="*{notes}" class="form-control" rows="3" placeholder="Notes complémentaires..."></textarea>
+                </div>
+                <div th:if="${#fields.hasErrors('notes')}" class="text-danger" th:errors="*{notes}"></div>
+            </div>
+
             <div class="btn-actions">
                 <button type="submit" class="btn btn-gradient">
                     <i class="fas fa-save"></i> Sauvegarder

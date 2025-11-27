@@ -5,6 +5,7 @@ import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
@@ -31,6 +32,33 @@ public class Contact {
 
     @Column(length = 20)
     private String phone;
+
+    // Nouveaux champs
+    @Column(length = 255)
+    private String address;
+
+    @Column(length = 100)
+    private String city;
+
+    @Column(length = 10)
+    private String postalCode;
+
+    @Column(length = 100)
+    private String country;
+
+    @Column(length = 100)
+    private String company;
+
+    @Column(length = 100)
+    private String jobTitle;
+
+    private LocalDate birthday;
+
+    @Column(length = 500)
+    private String notes;
+
+    @Column(length = 255)
+    private String website;
 
     @Column(nullable = false)
     @Builder.Default

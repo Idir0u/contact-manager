@@ -353,11 +353,25 @@
                         <div class="contact-name">
                             <i class="fas fa-user-circle"></i> <span th:text="${c.firstName + ' ' + c.lastName}"></span>
                         </div>
+                        <div class="contact-info" th:if="${c.company != null and !c.company.isEmpty()}">
+                            <i class="fas fa-building"></i> <span th:text="${c.company}"></span>
+                            <span th:if="${c.jobTitle != null and !c.jobTitle.isEmpty()}" th:text="' - ' + ${c.jobTitle}"></span>
+                        </div>
                         <div class="contact-info">
                             <i class="fas fa-envelope"></i> <span th:text="${c.email}"></span>
                         </div>
                         <div class="contact-info" th:if="${c.phone != null and !c.phone.isEmpty()}">
                             <i class="fas fa-phone"></i> <span th:text="${c.phone}"></span>
+                        </div>
+                        <div class="contact-info" th:if="${c.address != null and !c.address.isEmpty()}">
+                            <i class="fas fa-map-marker-alt"></i> 
+                            <span th:text="${c.address}"></span>
+                            <span th:if="${c.city != null and !c.city.isEmpty()}" th:text="', ' + ${c.city}"></span>
+                            <span th:if="${c.postalCode != null and !c.postalCode.isEmpty()}" th:text="' ' + ${c.postalCode}"></span>
+                            <span th:if="${c.country != null and !c.country.isEmpty()}" th:text="', ' + ${c.country}"></span>
+                        </div>
+                        <div class="contact-info" th:if="${c.website != null and !c.website.isEmpty()}">
+                            <i class="fas fa-link"></i> <a th:href="${c.website}" target="_blank" th:text="${c.website}"></a>
                         </div>
                     </div>
                     <div class="col-md-4 text-end">
